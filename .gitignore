@@ -1,0 +1,7 @@
+*
+!*/
+!*.*
+*.exe
+output/
+.vscode
+*.url
