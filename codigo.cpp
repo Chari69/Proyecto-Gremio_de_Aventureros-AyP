@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -34,6 +35,11 @@ class Aventurero {
             }
         }
 
+        void guardarAtributo(int n, string nombre, int cantidad) {
+            atributos[n].nombre = nombre;
+            atributos[n].cantidad = cantidad;
+        }
+
         int calcularPuntajeADN() {
             // hay que recorrer la matriz y hacer las debidas operaciones
             return 1;
@@ -49,16 +55,14 @@ class Archivo {
         };
 };
 
-class Datos : Archivo {
-    public:
-
-};
-
-void inicializar() {
-
-};
+void leerCarpeta() {
+    string directorio;
+    cin >> directorio;
+    directorio = "dir /b " + directorio + " > database.temp";
+    system(directorio.c_str());
+}
 
 int main() {
-    inicializar();
+    leerCarpeta();
     return 0;
 }
