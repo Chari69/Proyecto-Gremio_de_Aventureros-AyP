@@ -20,6 +20,8 @@ class Aventurero {
         Atributo *atributos;
         int **adn;
 
+        int puntajeADN = 0;
+
         Aventurero(string clase, string faccion, string nombre, int cantAtributos, int n_adn) {
             this->clase = clase;
             this->faccion = faccion;
@@ -40,9 +42,60 @@ class Aventurero {
             atributos[n].cantidad = cantidad;
         }
 
+        void asignarADN () {
+            for (int i = 0; i < n_adn; i++) {
+                for (int j = 0; j < n_adn; j++) {
+                    cin >> adn[i][j];
+                }
+            }
+        }
+
         int calcularPuntajeADN() {
-            // hay que recorrer la matriz y hacer las debidas operaciones
-            return 1;
+            int mitad = ((n_adn/2) + 1) - 1; // Mitad de la matriz
+            int mult = 1; // Valor base de multiplicacion
+
+            // Verdes
+            for (int i = 0; i < n_adn; i++) {
+                puntajeADN += adn[i][i];
+                adn[i][i] = -1;
+            }
+
+            // Azules
+            for (int i = 0; i < n_adn; i++) {
+                if (!(i == mitad)) {
+                    puntajeADN += adn[i][mitad];
+                    adn[i][mitad] = -1;
+                }
+            }
+
+            // Naranjas
+            for (int i = 0; i < n_adn; i++) {
+                if (!(i == mitad)) {
+                    puntajeADN += adn[mitad][i];
+                    adn[mitad][i] = -1;
+                }
+            }
+
+            // Amarillos
+            for (int i = 0, j = n_adn - 1; i < n_adn; i++, j--) {
+                if (!(i == mitad) && !(j == mitad) ) {
+                    puntajeADN += adn[i][j];
+                    adn[i][j] = -1;
+                } 
+            }
+
+            // Multiplicar puntaje blancos
+            for (int i = 0; i < n_adn; i++) {
+                for (int j = 0; j < n_adn; j++) {
+                    if (adn[i][j] == -1) continue;
+                    mult *= adn[i][j];
+                }
+            }
+            
+            // Segun la formula dada:
+            mult /= 4;
+            puntajeADN = mult - puntajeADN; 
+            return puntajeADN; 
         }
 };
 
@@ -63,6 +116,8 @@ void leerCarpeta() {
 }
 
 int main() {
-    leerCarpeta();
+    Aventurero test("Guerrero", "Corridas En Frio", "Leo", 5, 5);
+    test.asignarADN();
+    cout << test.calcularPuntajeADN() << endl;
     return 0;
 }
