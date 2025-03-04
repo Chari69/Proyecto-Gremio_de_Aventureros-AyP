@@ -10,6 +10,9 @@ struct Atributo {
 };
 
 class Aventurero {
+    private:
+        int i_adn = 0, j_adn = 0;
+
     public:
         string clase;
         string faccion;
@@ -26,7 +29,6 @@ class Aventurero {
             this->clase = "";
             this->faccion = "";
             this->nombre = "";
-
             this->cantAtributos = 0;
             this->n_adn = 0;
         }
@@ -44,17 +46,23 @@ class Aventurero {
             }
         }
 
+        void guardarADN (int valor) {
+            if(i_adn<n_adn && j_adn<n_adn){
+                adn[i_adn][j_adn] = valor;
+                cout << adn[i_adn][j_adn] << " ";
+                j_adn++;
+
+                if(i_adn<=n_adn && j_adn==n_adn){
+                    i_adn++;
+                    j_adn=0;
+                    cout << endl;
+                }
+            }
+        }
+
         void guardarAtributo(int n, string nombre, int cantidad) {
             atributos[n].nombre = nombre;
             atributos[n].cantidad = cantidad;
-        }
-
-        void asignarADN () {
-            for (int i = 0; i < n_adn; i++) {
-                for (int j = 0; j < n_adn; j++) {
-                    cin >> adn[i][j];
-                }
-            }
         }
 
         int calcularPuntajeADN() {
@@ -139,7 +147,8 @@ class Directorio {
                 getline(archivo, linea);
                 archivos[i] = linea;
             }
-            
+
+            archivo.close();
             system("del database.temp");
         }
 };
@@ -157,20 +166,20 @@ class Inicializador : Directorio, Funciones {
 
         // nombre del archivo, iteracion
         void asignarAventurero(string dir_archivo, int iterador) {
-            int cantAtributos = 0;
-
             string direccion = "D:\\Biblioteca\\Documentos\\Proyectos\\AyP\\Proyecto-Gremio_de_Aventureros-AyP\\database\\" + dir_archivo;
 
-            ifstream archivo(direccion);
-            
+            int cantAtributos=0, ordenMatriz=0;
+            int posAtributos=101, posADN=101;
+        
             // acondicionamos el archivo para ser leido sin contar espacios ni simbolos
+        
+            ifstream archivo(direccion);
+        
             if (archivo.is_open()) {
                 ofstream archivo_manipulado;
                 archivo_manipulado.open("archivo_manipulado.temp");
                 
                 string linea;
-
-                int posAtributos=101, posADN=101;
                 for (int i = 0; getline(archivo,linea) ; i++) {
 
                     if(linea=="ATRIB "){
@@ -182,10 +191,13 @@ class Inicializador : Directorio, Funciones {
                     if(i>posAtributos && i<posADN){
                         cantAtributos ++;
                     }
-
+                    if(i>posADN){
+                        ordenMatriz++;
+                    }
+        
                     for (int i = 0; i<linea.length() ; i++)
                     {
-                        if(linea[i]==':'||linea[i]=='|'){
+                        if(linea[i]==':'){
                             linea[i]= ' ';
                             archivo_manipulado << linea[i];
                         }
@@ -199,54 +211,63 @@ class Inicializador : Directorio, Funciones {
                 archivo_manipulado.close();
                 archivo.close();
             }
-            
+
             
             // leemos el archivo manipulado y guardamos los datos en la estructura aventurero
             aventurero[iterador].asignarAtributos(cantAtributos);
+            aventurero[iterador].asignarADN(ordenMatriz);
 
             ifstream archivo_manipulado("archivo_manipulado.temp");
 
             if(archivo_manipulado.is_open()){ 
                 string linea;
-                for (int i = 0; archivo_manipulado>>linea && linea!="ADN"; i++) {
-                    if(linea=="Clase"){
-                        getline(archivo_manipulado,linea);
-                        aventurero[iterador].clase = linea;
-                        i--;
-                        continue;
+                for (int i = 0; archivo_manipulado>>linea; i++) {
+                    if(i<posADN){
+                        if(linea=="Clase"){
+                            getline(archivo_manipulado,linea);
+                            aventurero[iterador].clase = linea;
+                            continue;
+                        }
+                        else if(linea=="Faccion"){
+                            getline(archivo_manipulado,linea);
+                            aventurero[iterador].faccion = linea;
+                            continue;
+                        }
+                        else if(linea=="Nombre"){
+                            getline(archivo_manipulado,linea);
+                            aventurero[iterador].nombre = linea;
+                            continue;
+                        }
+                        else if(linea=="ATRIB"){
+                            posAtributos++;
+                        }
+                        if(i>=posAtributos && i<(posADN)){
+                            aventurero[iterador].atributos[i-posAtributos].nombre = linea;
+                            getline(archivo_manipulado,linea);
+                            aventurero[iterador].atributos[i-posAtributos].cantidad = stoi(linea);
+                            continue;
+                        }
                     }
-                    if(linea=="Faccion"){
-                        getline(archivo_manipulado,linea);
-                        aventurero[iterador].faccion = linea;
-                        i--;
-                        continue;
-                    }
-                    if(linea=="Nombre"){
-                        getline(archivo_manipulado,linea);
-                        aventurero[iterador].nombre = linea;
-                        i--;
-                        continue;
-                    }
-                    else if(linea!="ATRIB"){
-                        aventurero[iterador].atributos[i].nombre = linea;
-                        getline(archivo_manipulado,linea);
-
-                        //aventurero[iterador].atributos[i].cantidad = linea;
-                        continue;
-                    }
-                    else{
-                        i--;
+                    else if(i>posADN){
+                        aventurero[iterador].guardarADN(stoi(linea));
                     }
                 }
-                archivo.close();
+                archivo_manipulado.close();
             }
-            
+
             cout << "Clase: " << aventurero[iterador].clase << endl;
             cout << "Faccion: " << aventurero[iterador].faccion << endl;
             cout << "Nombre: " << aventurero[iterador].nombre << endl;
             cout << "Atributos: " << endl;
             for (int i = 0; i < cantAtributos; i++) 
                 cout << aventurero[iterador].atributos[i].nombre << ": " << aventurero[iterador].atributos[i].cantidad << endl;
+        
+            for (int i = 0; i < ordenMatriz; i++) {
+                for (int j = 0; j < ordenMatriz; j++) {
+                    cout << aventurero[iterador].adn[i][j] << " ";
+                }
+                cout << endl;
+            }
         }
     
         void asignarAventureros() {
