@@ -159,7 +159,36 @@ class Directorio {
 };
 
 class Funciones {
+    public:
+        void Buscar(Aventurero *aventureros, int &cantAventureros) {
+            string parametro, busqueda;
+            int contador;
 
+            cin >> parametro;
+            cin.ignore(); 
+            getline(cin, busqueda, '\''); 
+            getline(cin, busqueda, '\''); 
+
+            if (parametro == "CLASE") {
+                for (int i = 0; i < cantAventureros; i++) {
+                    if (aventureros[i].clase == busqueda) {
+                        cout << aventureros[i].nombre << endl;
+                    }
+                }
+            } else if (parametro == "FACCION") {
+                for (int i = 0; i < (cantAventureros - 1); i++) {
+                    if (aventureros[i].faccion == busqueda) {
+                        cout << aventureros[i].nombre << endl;
+                    }
+                }
+            } else if (parametro == "NOMBRE") {
+                for (int i = 0; i < (cantAventureros - 1); i++) {
+                    if (aventureros[i].nombre == busqueda) {
+                        cout << aventureros[i].nombre << endl;
+                    }
+                }
+            }
+        }
 };
 
 class Inicializador : Directorio, Funciones {
@@ -172,6 +201,7 @@ class Inicializador : Directorio, Funciones {
             }
             delete[] aventurero;
             aventurero = aventurero_array;
+            delete[] aventurero_array; // test
         }
 
         // nombre del archivo, iteracion
@@ -278,6 +308,8 @@ class Inicializador : Directorio, Funciones {
                 }
                 cout << endl;
             }
+
+            system("del archivo_manipulado.temp");
         }
     
         void asignarAventureros() {
@@ -300,10 +332,11 @@ class Inicializador : Directorio, Funciones {
                 if(dato == "CARGAR") {
                     cin >> directorio;
                     leerCarpeta(directorio);
-                    crearArrayAventureros(2); // ASIGNADO MANUALMENTE
+                    crearArrayAventureros(cantArchivos);
                     asignarAventureros();
                 } else if (dato == "BUSCAR") {
                     cout << "estoy en la funcion BUSCAR" << endl;
+                    Buscar(aventurero, cantAventureros);
                 } else if (dato == "ORDENAR") {
                     cout << "estoy en la funcion ORDENAR" << endl;
                 } else if (dato == "SELECCIONAR") {
