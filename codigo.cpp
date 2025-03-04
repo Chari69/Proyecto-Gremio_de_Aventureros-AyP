@@ -151,6 +151,11 @@ class Directorio {
             archivo.close();
             system("del database.temp");
         }
+
+        void resetearDirectorio() {
+            cantArchivos = 0;
+            delete[] archivos;
+        }
 };
 
 class Funciones {
@@ -161,7 +166,12 @@ class Inicializador : Directorio, Funciones {
     
     private:
         void crearArrayAventureros(int num) {
-            aventurero = new Aventurero[num]();
+            Aventurero* aventurero_array = new Aventurero[cantAventureros + num]();
+            for (int i = 0; i < cantAventureros; i++) {
+            aventurero_array[i] = aventurero[i];
+            }
+            delete[] aventurero;
+            aventurero = aventurero_array;
         }
 
         // nombre del archivo, iteracion
@@ -271,13 +281,16 @@ class Inicializador : Directorio, Funciones {
         }
     
         void asignarAventureros() {
-            for (int i = 0; i < cantArchivos; i++) {
-                asignarAventurero(archivos[i], i);
+            for (int i = 0; i < cantArchivos; i++, cantAventureros++) {
+                // if( < cantAventureros)
+                asignarAventurero(archivos[i], cantAventureros);
             }
+            resetearDirectorio();
         }
 
     public:
         Aventurero *aventurero;
+        int cantAventureros = 0;
 
         void iniciar() {
             string dato;
