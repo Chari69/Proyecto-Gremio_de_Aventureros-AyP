@@ -15,7 +15,8 @@ class Aventurero {
 
     public:
         string clase;
-        string faccion;
+        int cantFacciones;
+        string *faccion;
         string nombre;
         
         int cantAtributos;
@@ -27,10 +28,15 @@ class Aventurero {
 
         Aventurero() {
             this->clase = "";
-            this->faccion = "";
             this->nombre = "";
             this->cantAtributos = 0;
             this->n_adn = 0;
+            this->cantFacciones = 0;
+        }
+
+        void asignarFaccion(int cantFacciones) {
+            this->cantFacciones = cantFacciones;
+            faccion = new string[cantFacciones];
         }
 
         void asignarAtributos(int cantAtributos) {
@@ -176,9 +182,13 @@ class Funciones {
                     }
                 }
             } else if (parametro == "FACCION") {
-                for (int i = 0; i < (cantAventureros - 1); i++) {
-                    if (aventureros[i].faccion == busqueda) {
-                        cout << aventureros[i].nombre << endl;
+                for (int i = 0; i < cantAventureros; i++) {
+                    for (int j = 0; j < aventureros[i].cantFacciones; j++) {
+
+                        if (aventureros[i].faccion[j] == busqueda) {
+                            cout << aventureros[i].nombre << endl;
+                        }
+
                     }
                 }
             } else if (parametro == "NOMBRE") {
@@ -201,7 +211,6 @@ class Inicializador : Directorio, Funciones {
             }
             delete[] aventurero;
             aventurero = aventurero_array;
-            delete[] aventurero_array; // test
         }
 
         // nombre del archivo, iteracion
@@ -270,7 +279,39 @@ class Inicializador : Directorio, Funciones {
                         }
                         else if(linea=="Faccion"){
                             getline(archivo_manipulado,linea);
-                            aventurero[iterador].faccion = linea;
+                            int cantfacciones=1;
+                            
+                            for (int i = 0; i < linea.length(); i++)
+                            {
+                                if(linea[i] == '|'){
+                                    cantfacciones++;
+                                }
+                            }
+
+                            string *faccionesNombres = new string[cantfacciones];
+                            int contador_culo = 0;
+                            int j = 0;
+                            for (int i = 0; i < cantfacciones; i++)
+                            {
+                                while (j < linea.length()) {
+                                    if(linea[j] == '|'){
+                                        j++;
+                                        break;
+                                    }
+                                    else{
+                                        faccionesNombres[i]= faccionesNombres[i] + linea[j];
+                                        j++;
+                                    }
+                                }
+                            }
+
+                            aventurero[iterador].asignarFaccion(cantfacciones);
+                            
+                            for (int i = 0; i < cantfacciones; i++) {
+                                aventurero[iterador].faccion[i] = faccionesNombres[i];
+                            }
+                            
+                            delete[] faccionesNombres;
                             continue;
                         }
                         else if(linea=="Nombre"){
@@ -296,7 +337,9 @@ class Inicializador : Directorio, Funciones {
             }
 
             cout << "Clase: " << aventurero[iterador].clase << endl;
-            cout << "Faccion: " << aventurero[iterador].faccion << endl;
+            for(int i = 0; i < aventurero[iterador].cantFacciones; i++) {
+                cout << "Faccion: " << aventurero[iterador].faccion[i] << " ";
+            }
             cout << "Nombre: " << aventurero[iterador].nombre << endl;
             cout << "Atributos: " << endl;
             for (int i = 0; i < cantAtributos; i++) 
@@ -347,9 +390,6 @@ class Inicializador : Directorio, Funciones {
             }
         }
 };
-
-
-
 
 int main() {
     //Aventurero test("Guerrero", "Corridas En Frio", "Leo", 5, 5);
