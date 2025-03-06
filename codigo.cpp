@@ -302,6 +302,8 @@ class Funciones {
         }
 
     public:
+        int contImprimir = 0; // Contador de archivos .out
+
         void Buscar(Aventurero *aventureros, int &cantAventureros) {
             string parametro, busqueda;
             int contador;
@@ -386,11 +388,16 @@ class Funciones {
         }
 
         void Imprimir(Aventurero *av, int &cantAventureros) {
-            ofstream archivo("operaciones/operaciones.txt");
+            contImprimir++;
+            char buffer[10]; 
+            itoa(contImprimir, buffer, 10);
+            string nombreArchivo = "operaciones/operacion" + string(buffer) + ".out";
+
+            ofstream archivo(nombreArchivo);
 
             if(!archivo.is_open()) {
                 system("mkdir operaciones"); 
-                archivo.open("operaciones/operaciones.txt");
+                archivo.open(nombreArchivo);
             }
 
             archivo << "operaciones realizadas: " << global_contadorOperaciones << endl;
@@ -616,7 +623,9 @@ class Inicializador : Directorio, Funciones {
                         cout << "Aventurero "<< i+1 << ":" << aventurero[i].nombre << endl;
                     }
                     Imprimir(aventurero, cantAventureros);
-                    exit(0);
+                    
+                } else if (dato == "SALIR") {
+                    exit(0); // esto no va, salir no existe
                 }
             }
         }
