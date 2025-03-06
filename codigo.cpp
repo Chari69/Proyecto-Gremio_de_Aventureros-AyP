@@ -158,6 +158,24 @@ class Directorio {
             system("del database.temp");
         }
 
+        void modificarStringDirectorio() {
+            string directorio_temp;
+            
+            for (int i = 0; i < directorio.length(); i++) {
+                if (directorio[i] == '"') {
+                    continue;
+                } else {
+                    directorio_temp += directorio[i];
+                }
+            }
+
+            if (directorio_temp[directorio_temp.length() - 1] != '/') {
+                directorio_temp += '/';
+            }
+
+            directorio = directorio_temp;
+        }
+
         void resetearDirectorio() {
             cantArchivos = 0;
             delete[] archivos;
@@ -215,7 +233,7 @@ class Inicializador : Directorio, Funciones {
 
         // nombre del archivo, iteracion
         void asignarAventurero(string dir_archivo, int iterador) {
-            string direccion = "D:\\Biblioteca\\Documentos\\Proyectos\\AyP\\Proyecto-Gremio_de_Aventureros-AyP\\database\\" + dir_archivo;
+            string direccion = directorio + dir_archivo;
 
             int cantAtributos=0, ordenMatriz=0;
             int posAtributos=101, posADN=101;
@@ -376,6 +394,7 @@ class Inicializador : Directorio, Funciones {
                     cin >> directorio;
                     leerCarpeta(directorio);
                     crearArrayAventureros(cantArchivos);
+                    modificarStringDirectorio();
                     asignarAventureros();
                 } else if (dato == "BUSCAR") {
                     cout << "estoy en la funcion BUSCAR" << endl;
