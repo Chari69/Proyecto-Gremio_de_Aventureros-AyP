@@ -132,7 +132,7 @@ class Directorio {
         int cantArchivos = 0;
 
         void leerCarpeta(string directorio) {
-            directorio = "dir /b " + directorio + " > database.temp";
+            directorio = "dir /b \"" + directorio + "\" > database.temp";
             system(directorio.c_str());
 
             ifstream archivo("database.temp");
@@ -160,7 +160,6 @@ class Directorio {
 
         void modificarStringDirectorio() {
             string directorio_temp;
-            
             for (int i = 0; i < directorio.length(); i++) {
                 if (directorio[i] == '"') {
                     continue;
@@ -168,11 +167,9 @@ class Directorio {
                     directorio_temp += directorio[i];
                 }
             }
-
-            if (directorio_temp[directorio_temp.length() - 1] != '/') {
+            if (directorio_temp[directorio_temp.length() - 1] != '/' ) {
                 directorio_temp += '/';
             }
-
             directorio = directorio_temp;
         }
 
@@ -391,7 +388,8 @@ class Inicializador : Directorio, Funciones {
             while(true) {
                 cin >> dato;
                 if(dato == "CARGAR") {
-                    cin >> directorio;
+                    getline(cin, directorio, '"');
+                    getline(cin, directorio, '"');
                     leerCarpeta(directorio);
                     crearArrayAventureros(cantArchivos);
                     modificarStringDirectorio();
