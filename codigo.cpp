@@ -4,6 +4,8 @@
 
 using namespace std;
 
+int global_contadorOperaciones = 0;
+
 int convertirCharAMinusc(int caracter) {
     if (caracter >= 'A' && caracter <= 'Z') {
         return caracter + 32;
@@ -133,6 +135,17 @@ class Aventurero {
             puntajeADN = mult - puntajeADN; 
             return puntajeADN; 
         }
+
+        /*
+        ~Aventurero() {
+            delete[] faccion;
+            delete[] atributos;
+            for (int i = 0; i < n_adn; ++i) {
+                delete[] adn[i];
+            }
+            delete[] adn;
+        }
+        */
 };
 
 class Directorio {
@@ -367,9 +380,42 @@ class Funciones {
             cantAventureros = contador;
 
             /*
-                Queda dependiendo del caracter, ordenal al derecho o al reves
+                Queda dependiendo del caracter, ordenar al derecho o al reves
             */
             cout << "LISTO" << endl;
+        }
+
+        void Imprimir(Aventurero *av, int &cantAventureros) {
+            ofstream archivo("operaciones/operaciones.txt");
+
+            if(!archivo.is_open()) {
+                system("mkdir operaciones"); 
+                archivo.open("operaciones/operaciones.txt");
+            }
+
+            archivo << "operaciones realizadas: " << global_contadorOperaciones << endl;
+            archivo << "aventureros encontrados: " << cantAventureros << endl;
+            archivo << "lista de aventureros: " << endl;
+
+            for(int i = 0; i < cantAventureros; i++) {
+                archivo << "#"<< i+1 << endl;                           // Numero del Aventurero
+                archivo << "Puntaje: " << av[i].puntajeADN << endl;     // Puntaje del ADN/Aventurero
+                archivo << "Clase: " << av[i].clase << endl;            // Clase del Aventurero
+                archivo << "Faccion: ";                                 // Faccion del Aventurero
+                for(int j = 0; j < av[i].cantFacciones; j++) {
+                    archivo << av[i].faccion[j] << " ";
+                    if (j < av[i].cantFacciones) {
+                        archivo << "| ";
+                    }
+                }
+                archivo << endl;
+                archivo << "Nombre: " << av[i].nombre << endl;          // Nombre del Aventurero
+                archivo << "Atributos";                                 // Atributos
+                for (int j = 0; j < av[i].cantAtributos; j++) {
+                    archivo << av[i].atributos[j].nombre << ": ";
+                    archivo << av[i].atributos[j].cantidad << endl;
+                }
+            }
         }
 };
 
@@ -508,6 +554,9 @@ class Inicializador : Directorio, Funciones {
                 archivo_manipulado.close();
             }
 
+            // Calcular Puntaje
+            aventurero[iterador].calcularPuntajeADN();
+
             cout << "Clase: " << aventurero[iterador].clase << endl;
             for(int i = 0; i < aventurero[iterador].cantFacciones; i++) {
                 cout << "Faccion: " << aventurero[iterador].faccion[i] << " ";
@@ -566,6 +615,7 @@ class Inicializador : Directorio, Funciones {
                     for (int i = 0; i < cantAventureros; i++) {
                         cout << "Aventurero "<< i+1 << ":" << aventurero[i].nombre << endl;
                     }
+                    Imprimir(aventurero, cantAventureros);
                     exit(0);
                 }
             }
