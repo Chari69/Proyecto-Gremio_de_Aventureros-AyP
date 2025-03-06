@@ -21,6 +21,29 @@ string cStrMin(const string &str) {
     return resultado;
 }
 
+// Función para omitir los espacios principio y al final de un string
+string qEsp(const string &str) {
+    int start = 0;
+    // Encuentra el primer carácter no blanco desde el principio
+    while (start < str.length() && (str[start] == ' ' || str[start] == '\t' || str[start] == '\n' || str[start] == '\r')) {
+        start++;
+    }
+
+    int end = str.length() - 1;
+    // Encuentra el primer carácter no blanco desde el final
+    while (end >= start && (str[end] == ' ' || str[end] == '\t' || str[end] == '\n' || str[end] == '\r')) {
+        end--;
+    }
+
+    // Crea una nueva cadena con el contenido recortado
+    string result = "";
+    for (int i = start; i <= end; i++) {
+        result += str[i];
+    }
+
+    return result;
+}
+
 struct Atributo {
     string nombre;
     int cantidad;
@@ -499,7 +522,7 @@ class Inicializador : Directorio, Funciones {
                     if(i<posADN){
                         if(linea=="Clase"){
                             getline(archivo_manipulado,linea);
-                            aventurero[iterador].clase = linea;
+                            aventurero[iterador].clase = qEsp(linea);
                             continue;
                         }
                         else if(linea=="Faccion"){
@@ -533,7 +556,7 @@ class Inicializador : Directorio, Funciones {
                             aventurero[iterador].asignarFaccion(cantfacciones);
                             
                             for (int i = 0; i < cantfacciones; i++) {
-                                aventurero[iterador].faccion[i] = faccionesNombres[i];
+                                aventurero[iterador].faccion[i] = qEsp(faccionesNombres[i]);
                             }
                             
                             delete[] faccionesNombres;
@@ -541,7 +564,7 @@ class Inicializador : Directorio, Funciones {
                         }
                         else if(linea=="Nombre"){
                             getline(archivo_manipulado,linea);
-                            aventurero[iterador].nombre = linea;
+                            aventurero[iterador].nombre = qEsp(linea);
                             continue;
                         }
                         else if(linea=="ATRIB"){
