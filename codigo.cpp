@@ -23,25 +23,25 @@ string cStrMin(const string &str) {
 
 // Función para omitir los espacios principio y al final de un string
 string qEsp(const string &str) {
-    int start = 0;
+    int cInicio = 0;
     // Encuentra el primer carácter no blanco desde el principio
-    while (start < str.length() && (str[start] == ' ' || str[start] == '\t' || str[start] == '\n' || str[start] == '\r')) {
-        start++;
+    while (cInicio < str.length() && (str[cInicio] == ' ' || str[cInicio] == '\t' || str[cInicio] == '\n' || str[cInicio] == '\r')) {
+        cInicio++;
     }
 
-    int end = str.length() - 1;
+    int cFinal = str.length() - 1;
     // Encuentra el primer carácter no blanco desde el final
-    while (end >= start && (str[end] == ' ' || str[end] == '\t' || str[end] == '\n' || str[end] == '\r')) {
-        end--;
+    while (cFinal >= cInicio && (str[cFinal] == ' ' || str[cFinal] == '\t' || str[cFinal] == '\n' || str[cFinal] == '\r')) {
+        cFinal--;
     }
 
     // Crea una nueva cadena con el contenido recortado
-    string result = "";
-    for (int i = start; i <= end; i++) {
-        result += str[i];
+    string resultado = "";
+    for (int i = cInicio; i <= cFinal; i++) {
+        resultado += str[i];
     }
 
-    return result;
+    return resultado;
 }
 
 struct Atributo {
