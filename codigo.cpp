@@ -236,12 +236,13 @@ class Funciones {
     private:
         // HAY QUE PULIR
         // SE NECESITA PODER ORDENAR PA LANTE O PA ATRAS SEGUN LO QUE INDIQUE EL USUARIO.
-        void bubbleSort(Aventurero *av, int n, const string atributoNombre) {
+        void bubbleSort(Aventurero *av, int &n, const string atributoNombre, int &contador) {
+            contador = 0;
             // Ordenar usando bubble sort
             for (int i = 0; i < n - 1; ++i) {
                 for (int j = 0; j < n - i - 1; ++j) {
                     int posA = -1, posB = -1;
-        
+
                     // Encontrar la posición del atributo en el aventurero j
                     for (int k = 0; k < av[j].cantAtributos; ++k) {
                         if (cStrMin(av[j].atributos[k].nombre) == atributoNombre) {
@@ -249,7 +250,7 @@ class Funciones {
                             break;
                         }
                     }
-        
+
                     // Encontrar la posición del atributo en el aventurero j + 1
                     for (int k = 0; k < av[j + 1].cantAtributos; ++k) {
                         if (cStrMin(av[j + 1].atributos[k].nombre) == atributoNombre) {
@@ -257,12 +258,18 @@ class Funciones {
                             break;
                         }
                     }
-        
+
+                    // Si uno de los aventureros no tiene el atributo, se manda al final
                     if (posA == -1 || posB == -1) {
-                        cout << "Atributo no encontrado en uno de los aventureros." << endl;
-                        return;
+                        if (posA == -1 && posB != -1) {
+                            // Intercambiar los aventureros
+                            Aventurero temp = av[j];
+                            av[j] = av[j + 1];
+                            av[j + 1] = temp;
+                        }
+                        continue;
                     }
-        
+
                     if (av[j].atributos[posA].cantidad > av[j + 1].atributos[posB].cantidad) {
                         // Intercambiar los aventureros
                         Aventurero temp = av[j];
@@ -270,6 +277,14 @@ class Funciones {
                         av[j + 1] = temp;
                     }
                 }
+            }
+
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < av[i].cantAtributos; j++) {
+                    if(cStrMin(av[i].atributos[j].nombre) == atributoNombre) {
+                        contador++;
+                    }
+                }   
             }
         }
 
@@ -313,6 +328,8 @@ class Funciones {
             bool iniciar = true;    // Bandera para finalizar el ciclo
             Operaciones op;         // Declaracion del objeto de operaciones
 
+            int contador = 0;
+
             // Ciclo de ejecucion. Se detiene cuando se ingresa "INICIAR"
             while (iniciar == true) {
                 cin >> arg1;    // Atributo
@@ -344,15 +361,13 @@ class Funciones {
             // Se usa un bubble sort
             for (int i = 0; i < op.numOp-1; i++) {
                 cout << op.operaciones[i] << " " << op.simbolo[i] << endl;
-                bubbleSort(aventureros, cantAventureros, op.operaciones[i]);
+                bubbleSort(aventureros, cantAventureros, op.operaciones[i], contador);
             }
 
+            cantAventureros = contador;
 
             /*
-                Como tal, funciona, sin embargo!!!!
-                Hay que tomar en cuenta que lo que no se encuentre, debe ser descartado
-
-                Un dolor de bolas, basicamente...
+                Queda dependiendo del caracter, ordenal al derecho o al reves
             */
             cout << "LISTO" << endl;
         }
@@ -542,6 +557,7 @@ class Inicializador : Directorio, Funciones {
                 } else if (dato == "ORDENAR") {
                     cout << "estoy en la funcion ORDENAR" << endl;
                     Ordenar(aventurero, cantAventureros);
+                    crearArrayAventureros(0);
                 } else if (dato == "SELECCIONAR") {
                     cout << "estoy en la funcion SELECCIONAR" << endl;
                 } else if (dato == "IMPRIMIR") {
@@ -550,6 +566,7 @@ class Inicializador : Directorio, Funciones {
                     for (int i = 0; i < cantAventureros; i++) {
                         cout << "Aventurero "<< i+1 << ":" << aventurero[i].nombre << endl;
                     }
+                    exit(0);
                 }
             }
         }
