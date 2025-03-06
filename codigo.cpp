@@ -4,6 +4,21 @@
 
 using namespace std;
 
+int convertirCharAMinusc(int caracter) {
+    if (caracter >= 'A' && caracter <= 'Z') {
+        return caracter + 32;
+    }
+    return caracter;
+}
+
+string cStrMin(const string &str) {
+    string resultado = str;
+    for (size_t i = 0; i < str.length(); ++i) {
+        resultado[i] = convertirCharAMinusc(str[i]);
+    }
+    return resultado;
+}
+
 struct Atributo {
     string nombre;
     int cantidad;
@@ -179,7 +194,85 @@ class Directorio {
         }
 };
 
+// Clase de operaciones
+class Operaciones {
+    private:
+        string *op_temp;
+        string *sim_temp;
+        int cantOp = 0;
+
+    public:
+        string *operaciones;
+        string *simbolo;
+        int numOp = 1;
+
+        void modificarArrayOperaciones(int num) {
+            op_temp = new string[num];
+            sim_temp = new string[num];
+
+            for (int i = 0; i < cantOp; i++) {
+                op_temp[i] = operaciones[i];
+                sim_temp[i] = simbolo[i];
+            }
+
+            if (cantOp > 0) {
+                delete[] operaciones;
+                delete[] simbolo;
+            }
+
+            operaciones = op_temp;
+            simbolo = sim_temp;
+
+            cantOp++;
+        }
+
+        ~Operaciones() {
+            delete[] operaciones;
+            delete[] simbolo;
+        }
+};
+
 class Funciones {
+    private:
+        // HAY QUE PULIR
+        // SE NECESITA PODER ORDENAR PA LANTE O PA ATRAS SEGUN LO QUE INDIQUE EL USUARIO.
+        void bubbleSort(Aventurero *av, int n, const string atributoNombre) {
+            // Ordenar usando bubble sort
+            for (int i = 0; i < n - 1; ++i) {
+                for (int j = 0; j < n - i - 1; ++j) {
+                    int posA = -1, posB = -1;
+        
+                    // Encontrar la posición del atributo en el aventurero j
+                    for (int k = 0; k < av[j].cantAtributos; ++k) {
+                        if (cStrMin(av[j].atributos[k].nombre) == atributoNombre) {
+                            posA = k;
+                            break;
+                        }
+                    }
+        
+                    // Encontrar la posición del atributo en el aventurero j + 1
+                    for (int k = 0; k < av[j + 1].cantAtributos; ++k) {
+                        if (cStrMin(av[j + 1].atributos[k].nombre) == atributoNombre) {
+                            posB = k;
+                            break;
+                        }
+                    }
+        
+                    if (posA == -1 || posB == -1) {
+                        cout << "Atributo no encontrado en uno de los aventureros." << endl;
+                        return;
+                    }
+        
+                    if (av[j].atributos[posA].cantidad > av[j + 1].atributos[posB].cantidad) {
+                        // Intercambiar los aventureros
+                        Aventurero temp = av[j];
+                        av[j] = av[j + 1];
+                        av[j + 1] = temp;
+                    }
+                }
+            }
+        }
+
     public:
         void Buscar(Aventurero *aventureros, int &cantAventureros) {
             string parametro, busqueda;
@@ -213,6 +306,55 @@ class Funciones {
                     }
                 }
             }
+        }
+
+        void Ordenar(Aventurero *aventureros, int &cantAventureros) {
+            string arg1, simbolo;   // arg1 es el atributo, simbolo es el simbolo de ordenamiento (>, <)
+            bool iniciar = true;    // Bandera para finalizar el ciclo
+            Operaciones op;         // Declaracion del objeto de operaciones
+
+            // Ciclo de ejecucion. Se detiene cuando se ingresa "INICIAR"
+            while (iniciar == true) {
+                cin >> arg1;    // Atributo
+
+                if(arg1 == "INICIAR") {
+                    iniciar = false;
+                    break;
+                }
+                
+                cin >> simbolo;             // Recibir el simbolo de ordenamiento
+                arg1 = cStrMin(arg1);       // Convertir en minuscula lo que sea, por que ya conozco casos...
+
+                // Esto modifica y asigna el array de operaciones (dentro del objeto) (para almacenarlas)
+                op.modificarArrayOperaciones(op.numOp); 
+                
+                // Almacenar el tipo de operacion (atributo) y su simbolo
+                // Debe ser numOp - 1 SIEMPRE (esta iniciado en 1)
+                op.operaciones[op.numOp-1] = arg1;
+                op.simbolo[op.numOp-1] = simbolo;
+
+                cout << "operacion numero: " << op.numOp << endl;;
+
+                op.numOp++; // Sumar 1 al numero de operaciones
+            }
+            
+            cout << "===========" << endl;
+
+            // Ordenar los aventureros segun las operaciones
+            // Se usa un bubble sort
+            for (int i = 0; i < op.numOp-1; i++) {
+                cout << op.operaciones[i] << " " << op.simbolo[i] << endl;
+                bubbleSort(aventureros, cantAventureros, op.operaciones[i]);
+            }
+
+
+            /*
+                Como tal, funciona, sin embargo!!!!
+                Hay que tomar en cuenta que lo que no se encuentre, debe ser descartado
+
+                Un dolor de bolas, basicamente...
+            */
+            cout << "LISTO" << endl;
         }
 };
 
@@ -399,10 +541,15 @@ class Inicializador : Directorio, Funciones {
                     Buscar(aventurero, cantAventureros);
                 } else if (dato == "ORDENAR") {
                     cout << "estoy en la funcion ORDENAR" << endl;
+                    Ordenar(aventurero, cantAventureros);
                 } else if (dato == "SELECCIONAR") {
                     cout << "estoy en la funcion SELECCIONAR" << endl;
                 } else if (dato == "IMPRIMIR") {
                     cout << "estoy en la funcion IMPRIMIR" << endl;
+
+                    for (int i = 0; i < cantAventureros; i++) {
+                        cout << "Aventurero "<< i+1 << ":" << aventurero[i].nombre << endl;
+                    }
                 }
             }
         }
