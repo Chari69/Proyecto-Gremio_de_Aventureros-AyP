@@ -737,6 +737,7 @@ class Inicializador : Directorio, Funciones {
         
             while(true) {
                 cin >> dato;
+                if (cin.eof()) break; // Previene un bucle infinito si se lee la entrada de un archivo.
                 if(dato == "CARGAR") {
                     getline(cin, directorio, '"');
                     getline(cin, directorio, '"');
