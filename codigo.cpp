@@ -235,11 +235,14 @@ class Operaciones {
     private:
         string *op_temp;
         string *sim_temp;
+        int *atrVal_temp;
+        int cantAtr = 0;
         int cantOp = 0;
 
     public:
         string *operaciones;
         string *simbolo;
+        int *atrVal;
         int numOp = 1;
 
         void modificarArrayOperaciones(int num) {
@@ -262,9 +265,27 @@ class Operaciones {
             cantOp++;
         }
 
+        void modificarAtrOp(int num) {
+            atrVal_temp = new int[num];
+
+            for (int i = 0; i < cantAtr; i++) {
+                atrVal_temp[i] = atrVal[i];
+            }
+
+            if (cantAtr > 0) {
+                delete[] atrVal;
+            }
+
+            atrVal = atrVal_temp;
+            cantAtr++;
+        }
+
         ~Operaciones() {
             delete[] operaciones;
             delete[] simbolo;
+            if(cantAtr != 0) {
+                delete[] atrVal;
+            }
         }
 };
 
@@ -324,6 +345,46 @@ class Funciones {
             }
         }
 
+        void seleccionarAventurero(Aventurero *av, int n, string &atbNombre, string simbolo, int valor, int &contador, bool &activacionAnterior) {
+            int tempCount = 0;
+            // i es aventurero
+            // j es atributo
+            if(activacionAnterior = true) {
+                tempCount = contador;
+            }
+
+            for (int i = tempCount; i < n; i++) {
+                for(int j = 0; j < av[i].cantAtributos; j++) {
+
+                    if(cStrMin(av[i].atributos[j].nombre) == atbNombre) {
+                        if (simbolo == ">" && av[i].atributos[j].cantidad < valor) {
+                            Aventurero temp = av[i];
+                            av[i] = av[tempCount];
+                            av[tempCount] = temp;
+                            tempCount++;
+                            break;
+                        } else if (simbolo == "<" && av[i].atributos[j].cantidad > valor) {
+                            Aventurero temp = av[i];
+                            av[i] = av[tempCount];
+                            av[tempCount] = temp;
+                            tempCount++;
+                            break;
+                        // Aca no se si es mayor o igual
+                        } else if (simbolo == "EXISTE" && av[i].atributos[j].cantidad > 0) {
+                            Aventurero temp = av[i];
+                            av[i] = av[tempCount];
+                            av[tempCount] = temp;
+                            tempCount++;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            contador = tempCount;
+            activacionAnterior = true;
+        }
+    
     public:
         int contImprimir = 0; // Contador de archivos .out
 
@@ -408,6 +469,59 @@ class Funciones {
                 Queda dependiendo del caracter, ordenar al derecho o al reves
             */
             cout << "LISTO" << endl;
+        }
+
+        void Seleccionar(Aventurero *av, int &cantAventureros) {
+            string arg1;              // arg1 es el atributo, simbolo es el simbolo de ordenamiento (>, <)
+            string simbolo = "EXISTE";
+            int valor = 0;          // valor es el valor a comparar del atributo
+            bool iniciar = true;    // Bandera para finalizar el ciclo
+            int contador = 0;
+            Operaciones op;         // Declaracion del objeto de operaciones
+
+            // Ciclo de ejecucion. Se detiene cuando se ingresa "INICIAR"
+            while (iniciar == true) {
+                cin >> arg1;    // Atributo
+
+                if(arg1 == "INICIAR") {
+                    iniciar = false;
+                    break;
+                }
+
+                if (cin.peek() != '\n') {
+                    cin >> simbolo;             // Recibir el simbolo de ordenamiento
+                    cin >> valor;               // Recibir Valor de ordenamiento
+                } 
+
+                arg1 = cStrMin(arg1);  
+
+                op.modificarArrayOperaciones(op.numOp);
+                op.modificarAtrOp(op.numOp);
+
+                // Almacenar el tipo de operacion (atributo) y su simbolo
+                // Debe ser numOp - 1 SIEMPRE (esta iniciado en 1)
+                op.operaciones[op.numOp-1] = arg1;
+                op.simbolo[op.numOp-1] = simbolo;
+                op.atrVal[op.numOp-1] = valor;
+
+                cout << "operacion numero: " << op.numOp << endl;;
+
+                op.numOp++; // Sumar 1 al numero de operaciones
+            }
+
+            cout << "===========" << endl;
+
+            bool activacionAnterior = false;
+
+            // Seleccionar los aventureros segun las operaciones
+            for (int i = 0; i < op.numOp-1; i++) {
+                seleccionarAventurero(av, cantAventureros, op.operaciones[i], op.simbolo[i], op.atrVal[i], contador, activacionAnterior);
+            }
+
+            cantAventureros = contador;
+
+            // cout 
+            
         }
 
         void Imprimir(Aventurero *av, int &cantAventureros) {
@@ -639,6 +753,8 @@ class Inicializador : Directorio, Funciones {
                     crearArrayAventureros(0);
                 } else if (dato == "SELECCIONAR") {
                     cout << "estoy en la funcion SELECCIONAR" << endl;
+                    Seleccionar(aventurero, cantAventureros);
+                    crearArrayAventureros(0);
                 } else if (dato == "IMPRIMIR") {
                     cout << "estoy en la funcion IMPRIMIR" << endl;
 
@@ -655,10 +771,6 @@ class Inicializador : Directorio, Funciones {
 };
 
 int main() {
-    //Aventurero test("Guerrero", "Corridas En Frio", "Leo", 5, 5);
-    //test.asignarADN();
-    //cout << test.calcularPuntajeADN() << endl;
-
     Inicializador programa;
     programa.iniciar();
     return 0;
