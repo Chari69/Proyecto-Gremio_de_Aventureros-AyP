@@ -395,7 +395,7 @@ class Funciones {
             }
 
             // n es cantidad de aventureros, simbolo es lo que se buscara.
-            for (int i = 0; i < n; i++) {
+            for (int i = tempCount; i < n; i++) {
                 if(busqueda == "nombre") {
                     if (av[i].nombre == simbolo) {
                         Aventurero temp = av[i];
