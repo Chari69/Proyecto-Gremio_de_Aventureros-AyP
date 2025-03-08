@@ -324,12 +324,12 @@ class Funciones {
                         continue;
                     }
 
-                    if (simbolo == ">" && av[j].atributos[posA].cantidad > av[j + 1].atributos[posB].cantidad) {
+                    if (simbolo == "<" && av[j].atributos[posA].cantidad > av[j + 1].atributos[posB].cantidad) {
                         // Intercambiar los aventureros
                         Aventurero temp = av[j];
                         av[j] = av[j + 1];
                         av[j + 1] = temp;
-                    } else if (simbolo == "<" && av[j].atributos[posA].cantidad < av[j + 1].atributos[posB].cantidad) {
+                    } else if (simbolo == ">" && av[j].atributos[posA].cantidad < av[j + 1].atributos[posB].cantidad) {
                         // Intercambiar los aventureros
                         Aventurero temp = av[j];
                         av[j] = av[j + 1];
@@ -611,7 +611,7 @@ class Funciones {
                 }
                 archivo << endl;
                 archivo << "Nombre: " << av[i].nombre << endl;          // Nombre del Aventurero
-                archivo << "Atributos";                                 // Atributos
+                archivo << "Atributos" << endl;                                 // Atributos
                 for (int j = 0; j < av[i].cantAtributos; j++) {
                     archivo << av[i].atributos[j].nombre << ": ";
                     archivo << av[i].atributos[j].cantidad << endl;
