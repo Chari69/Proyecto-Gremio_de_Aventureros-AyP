@@ -293,7 +293,7 @@ class Funciones {
     private:
         // HAY QUE PULIR
         // SE NECESITA PODER ORDENAR PA LANTE O PA ATRAS SEGUN LO QUE INDIQUE EL USUARIO.
-        void bubbleSort(Aventurero *av, int &n, const string atributoNombre, int &contador) {
+        void bubbleSort(Aventurero *av, int &n, const string atributoNombre, string &simbolo, int &contador) {
             contador = 0;
             // Ordenar usando bubble sort
             for (int i = 0; i < n - 1; ++i) {
@@ -327,7 +327,12 @@ class Funciones {
                         continue;
                     }
 
-                    if (av[j].atributos[posA].cantidad > av[j + 1].atributos[posB].cantidad) {
+                    if (simbolo == ">" && av[j].atributos[posA].cantidad > av[j + 1].atributos[posB].cantidad) {
+                        // Intercambiar los aventureros
+                        Aventurero temp = av[j];
+                        av[j] = av[j + 1];
+                        av[j + 1] = temp;
+                    } else if (simbolo == "<" && av[j].atributos[posA].cantidad < av[j + 1].atributos[posB].cantidad) {
                         // Intercambiar los aventureros
                         Aventurero temp = av[j];
                         av[j] = av[j + 1];
@@ -423,7 +428,8 @@ class Funciones {
         }
 
         void Ordenar(Aventurero *aventureros, int &cantAventureros) {
-            string arg1, simbolo;   // arg1 es el atributo, simbolo es el simbolo de ordenamiento (>, <)
+            string arg1;             // arg1 es el atributo
+            string simbolo = "<";   // simbolo es el simbolo de ordenamiento (default <)
             bool iniciar = true;    // Bandera para finalizar el ciclo
             Operaciones op;         // Declaracion del objeto de operaciones
 
@@ -438,7 +444,10 @@ class Funciones {
                     break;
                 }
                 
-                cin >> simbolo;             // Recibir el simbolo de ordenamiento
+                if (cin.peek() != '\n') {
+                    cin >> simbolo;             // Recibir el simbolo de ordenamiento
+                } 
+
                 arg1 = cStrMin(arg1);       // Convertir en minuscula lo que sea, por que ya conozco casos...
 
                 // Esto modifica y asigna el array de operaciones (dentro del objeto) (para almacenarlas)
@@ -460,15 +469,10 @@ class Funciones {
             // Se usa un bubble sort
             for (int i = 0; i < op.numOp-1; i++) {
                 cout << op.operaciones[i] << " " << op.simbolo[i] << endl;
-                bubbleSort(aventureros, cantAventureros, op.operaciones[i], contador);
+                bubbleSort(aventureros, cantAventureros, op.operaciones[i], simbolo, contador);
             }
 
             cantAventureros = contador;
-
-            /*
-                Queda dependiendo del caracter, ordenar al derecho o al reves
-            */
-            cout << "LISTO" << endl;
         }
 
         void Seleccionar(Aventurero *av, int &cantAventureros) {
