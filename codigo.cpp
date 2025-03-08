@@ -291,8 +291,6 @@ class Operaciones {
 
 class Funciones {
     private:
-        // HAY QUE PULIR
-        // SE NECESITA PODER ORDENAR PA LANTE O PA ATRAS SEGUN LO QUE INDIQUE EL USUARIO.
         void bubbleSort(Aventurero *av, int &n, const string atributoNombre, string &simbolo, int &contador) {
             contador = 0;
             // Ordenar usando bubble sort
@@ -510,7 +508,8 @@ class Funciones {
 
                 cout << "operacion numero: " << op.numOp << endl;;
 
-                op.numOp++; // Sumar 1 al numero de operaciones
+                simbolo = "EXISTE"; // Para evitar problemas. Volver al valor default.
+                op.numOp++;         // Sumar 1 al numero de operaciones                
             }
 
             cout << "===========" << endl;
