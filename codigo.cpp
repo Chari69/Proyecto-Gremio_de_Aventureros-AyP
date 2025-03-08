@@ -594,8 +594,10 @@ class Funciones {
 
             archivo << "operaciones realizadas: " << global_contadorOperaciones << endl;
             archivo << "aventureros encontrados: " << cantAventureros << endl;
-            archivo << "lista de aventureros: " << endl;
-
+            if(cantAventureros != 0) {
+                archivo << "lista de aventureros: " << endl;
+            }
+            
             for(int i = 0; i < cantAventureros; i++) {
                 archivo << "#"<< i+1 << endl;                           // Numero del Aventurero
                 archivo << "Puntaje: " << av[i].puntajeADN << endl;     // Puntaje del ADN/Aventurero
