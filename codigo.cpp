@@ -95,7 +95,7 @@ class Aventurero {
         void guardarADN (int valor) {
             if(i_adn<n_adn && j_adn<n_adn){
                 adn[i_adn][j_adn] = valor;
-                cout << adn[i_adn][j_adn] << " ";
+                //cout << adn[i_adn][j_adn] << " ";
                 j_adn++;
 
                 if(i_adn<=n_adn && j_adn==n_adn){
@@ -801,18 +801,22 @@ class Inicializador : Directorio, Funciones {
                     crearArrayAventureros(cantArchivos);
                     modificarStringDirectorio();
                     asignarAventureros();
+                    global_contadorOperaciones++;           // no se si se debe sumar en cargar, lol
                 } else if (dato == "BUSCAR") {
                     //cout << "estoy en la funcion BUSCAR" << endl;
                     Buscar(aventurero, cantAventureros);
                     crearArrayAventureros(0);
+                    global_contadorOperaciones++;
                 } else if (dato == "ORDENAR") {
                     //cout << "estoy en la funcion ORDENAR" << endl;
                     Ordenar(aventurero, cantAventureros);
                     crearArrayAventureros(0);
+                    global_contadorOperaciones++;
                 } else if (dato == "SELECCIONAR") {
                     //cout << "estoy en la funcion SELECCIONAR" << endl;
                     Seleccionar(aventurero, cantAventureros);
                     crearArrayAventureros(0);
+                    global_contadorOperaciones++;
                 } else if (dato == "IMPRIMIR") {
                     //cout << "estoy en la funcion IMPRIMIR" << endl;
                     /*
