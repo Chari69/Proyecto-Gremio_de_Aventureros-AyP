@@ -101,7 +101,6 @@ class Aventurero {
                 if(i_adn<=n_adn && j_adn==n_adn){
                     i_adn++;
                     j_adn=0;
-                    cout << endl;
                 }
             }
         }
@@ -388,41 +387,97 @@ class Funciones {
             activacionAnterior = true;
         }
     
+        void buscarAventurero(Aventurero *av, int n, string &busqueda, string &simbolo, int &contador, bool &activacionAnterior) {
+            int tempCount = 0;
+
+            if(activacionAnterior = true) {
+                tempCount = contador;
+            }
+
+            // n es cantidad de aventureros, simbolo es lo que se buscara.
+            for (int i = 0; i < n; i++) {
+                if(busqueda == "nombre") {
+                    if (av[i].nombre == simbolo) {
+                        Aventurero temp = av[i];
+                        av[i] = av[tempCount];
+                        av[tempCount] = temp;
+                        tempCount++;
+                    }
+                } else if (busqueda == "clase") {
+                    if (av[i].clase == simbolo) {
+                        Aventurero temp = av[i];
+                        av[i] = av[tempCount];
+                        av[tempCount] = temp;
+                        tempCount++;
+                    }
+                } else if (busqueda == "faccion") {
+                    // Faccion, al ser un arreglo, debe ser recorrida
+                    for (int j = 0; j < av[i].cantFacciones; j++) {
+                        if (av[i].faccion[j] == simbolo) {
+                            Aventurero temp = av[i];
+                            av[i] = av[tempCount];
+                            av[tempCount] = temp;
+                            tempCount++;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            contador = tempCount;
+            activacionAnterior = true;
+        }
     public:
         int contImprimir = 0; // Contador de archivos .out
 
         void Buscar(Aventurero *aventureros, int &cantAventureros) {
-            string parametro, busqueda;
-            int contador;
+            string arg1;            // arg1 es el PARAMETRO
+            string simbolo;         // simbolo en este caso es el nombre de lo que se quiere buscar
+            bool iniciar = true;    // Bandera para finalizar el ciclo
+            Operaciones op;         // Declaracion del objeto de operaciones
 
-            cin >> parametro;
-            cin.ignore(); 
-            getline(cin, busqueda, '\''); 
-            getline(cin, busqueda, '\''); 
+            int contador = 0;
 
-            if (parametro == "CLASE") {
-                for (int i = 0; i < cantAventureros; i++) {
-                    if (aventureros[i].clase == busqueda) {
-                        cout << aventureros[i].nombre << endl;
-                    }
+            // Ciclo de ejecucion. Se detiene cuando se ingresa "INICIAR"
+            while (iniciar == true) {
+                cin >> arg1;
+
+                if(arg1 == "INICIAR") {
+                    iniciar = false;
+                    break;
                 }
-            } else if (parametro == "FACCION") {
-                for (int i = 0; i < cantAventureros; i++) {
-                    for (int j = 0; j < aventureros[i].cantFacciones; j++) {
 
-                        if (aventureros[i].faccion[j] == busqueda) {
-                            cout << aventureros[i].nombre << endl;
-                        }
+                // Recibir el nombre de lo que se quiere bucar
+                cin.ignore(); 
+                getline(cin, simbolo, '\''); 
+                getline(cin, simbolo, '\''); 
 
-                    }
-                }
-            } else if (parametro == "NOMBRE") {
-                for (int i = 0; i < (cantAventureros - 1); i++) {
-                    if (aventureros[i].nombre == busqueda) {
-                        cout << aventureros[i].nombre << endl;
-                    }
-                }
+                arg1 = cStrMin(arg1);       // Convertir en minuscula lo que sea, por que ya conozco casos...
+                simbolo = qEsp(simbolo);    // Quitar espacios adelante y atras, por si acaso.
+
+                // Esto modifica y asigna el array de operaciones (dentro del objeto) (para almacenarlas)
+                op.modificarArrayOperaciones(op.numOp); 
+                
+                // Almacenar el tipo de operacion (busqueda) y su parametro
+                // Debe ser numOp - 1 SIEMPRE (esta iniciado en 1)
+                op.operaciones[op.numOp-1] = arg1;
+                op.simbolo[op.numOp-1] = simbolo;
+
+                //cout << "operacion numero: " << op.numOp << endl;;
+
+                op.numOp++; // Sumar 1 al numero de operaciones
             }
+            
+            //cout << "===========" << endl;
+
+            bool activacionAnterior = false;
+
+            // Ordenar los aventureros segun las operaciones
+            for (int i = 0; i < op.numOp-1; i++) {
+                buscarAventurero(aventureros, cantAventureros, op.operaciones[i], op.simbolo[i], contador, activacionAnterior);
+            }
+
+            cantAventureros = contador;
         }
 
         void Ordenar(Aventurero *aventureros, int &cantAventureros) {
@@ -456,17 +511,17 @@ class Funciones {
                 op.operaciones[op.numOp-1] = arg1;
                 op.simbolo[op.numOp-1] = simbolo;
 
-                cout << "operacion numero: " << op.numOp << endl;;
+                //cout << "operacion numero: " << op.numOp << endl;;
 
                 op.numOp++; // Sumar 1 al numero de operaciones
             }
             
-            cout << "===========" << endl;
+            //cout << "===========" << endl;
 
             // Ordenar los aventureros segun las operaciones
             // Se usa un bubble sort
             for (int i = 0; i < op.numOp-1; i++) {
-                cout << op.operaciones[i] << " " << op.simbolo[i] << endl;
+                //cout << op.operaciones[i] << " " << op.simbolo[i] << endl;
                 bubbleSort(aventureros, cantAventureros, op.operaciones[i], simbolo, contador);
             }
 
@@ -506,13 +561,13 @@ class Funciones {
                 op.simbolo[op.numOp-1] = simbolo;
                 op.atrVal[op.numOp-1] = valor;
 
-                cout << "operacion numero: " << op.numOp << endl;;
+                //cout << "operacion numero: " << op.numOp << endl;;
 
                 simbolo = "EXISTE"; // Para evitar problemas. Volver al valor default.
                 op.numOp++;         // Sumar 1 al numero de operaciones                
             }
 
-            cout << "===========" << endl;
+            //cout << "===========" << endl;
 
             bool activacionAnterior = false;
 
@@ -521,10 +576,7 @@ class Funciones {
                 seleccionarAventurero(av, cantAventureros, op.operaciones[i], op.simbolo[i], op.atrVal[i], contador, activacionAnterior);
             }
 
-            cantAventureros = contador;
-
-            // cout 
-            
+            cantAventureros = contador; 
         }
 
         void Imprimir(Aventurero *av, int &cantAventureros) {
@@ -551,7 +603,7 @@ class Funciones {
                 archivo << "Faccion: ";                                 // Faccion del Aventurero
                 for(int j = 0; j < av[i].cantFacciones; j++) {
                     archivo << av[i].faccion[j] << " ";
-                    if (j < av[i].cantFacciones) {
+                    if (j < av[i].cantFacciones-1) {
                         archivo << "| ";
                     }
                 }
@@ -704,6 +756,7 @@ class Inicializador : Directorio, Funciones {
             // Calcular Puntaje
             aventurero[iterador].calcularPuntajeADN();
 
+            /*
             cout << "Clase: " << aventurero[iterador].clase << endl;
             for(int i = 0; i < aventurero[iterador].cantFacciones; i++) {
                 cout << "Faccion: " << aventurero[iterador].faccion[i] << " ";
@@ -718,7 +771,7 @@ class Inicializador : Directorio, Funciones {
                     cout << aventurero[iterador].adn[i][j] << " ";
                 }
                 cout << endl;
-            }
+            }*/
 
             system("del archivo_manipulado.temp");
         }
@@ -749,24 +802,25 @@ class Inicializador : Directorio, Funciones {
                     modificarStringDirectorio();
                     asignarAventureros();
                 } else if (dato == "BUSCAR") {
-                    cout << "estoy en la funcion BUSCAR" << endl;
+                    //cout << "estoy en la funcion BUSCAR" << endl;
                     Buscar(aventurero, cantAventureros);
+                    crearArrayAventureros(0);
                 } else if (dato == "ORDENAR") {
-                    cout << "estoy en la funcion ORDENAR" << endl;
+                    //cout << "estoy en la funcion ORDENAR" << endl;
                     Ordenar(aventurero, cantAventureros);
                     crearArrayAventureros(0);
                 } else if (dato == "SELECCIONAR") {
-                    cout << "estoy en la funcion SELECCIONAR" << endl;
+                    //cout << "estoy en la funcion SELECCIONAR" << endl;
                     Seleccionar(aventurero, cantAventureros);
                     crearArrayAventureros(0);
                 } else if (dato == "IMPRIMIR") {
-                    cout << "estoy en la funcion IMPRIMIR" << endl;
-
+                    //cout << "estoy en la funcion IMPRIMIR" << endl;
+                    /*
                     for (int i = 0; i < cantAventureros; i++) {
                         cout << "Aventurero "<< i+1 << ":" << aventurero[i].nombre << endl;
                     }
+                    */
                     Imprimir(aventurero, cantAventureros);
-                    
                 } else if (dato == "SALIR") {
                     exit(0); // esto no va, salir no existe
                 }
