@@ -708,7 +708,6 @@ class Inicializador : Directorio, Funciones {
                             }
 
                             string *faccionesNombres = new string[cantfacciones];
-                            int contador_culo = 0;
                             int j = 0;
                             for (int i = 0; i < cantfacciones; i++)
                             {
@@ -827,8 +826,6 @@ class Inicializador : Directorio, Funciones {
                     }
                     */
                     Imprimir(aventurero, cantAventureros);
-                } else if (dato == "SALIR") {
-                    exit(0); // esto no va, salir no existe
                 }
             }
         }
