@@ -44,6 +44,45 @@ string qEsp(const string &str) {
     return resultado;
 }
 
+// funcion que replica el comportamiento de itoa(), para convertir un int en un caracter, ya que al parecer aunque sea de cstdlib, no esta en todos los compiladores
+void cus_itoa(int num, char* str, int base) {
+    int i = 0;
+    bool isNegative = false;
+
+    if (num == 0) {
+        str[i++] = '0';
+        str[i] = '\0';
+        return;
+    }
+
+    if (num < 0 && base == 10) {
+        isNegative = true;
+        num = -num;
+    }
+
+    while (num != 0) {
+        int rem = num % base;
+        str[i++] = (rem > 9) ? (rem - 10) + 'a' : rem + '0';
+        num = num / base;
+    }
+
+    if (isNegative) {
+        str[i++] = '-';
+    }
+
+    str[i] = '\0';
+
+    int start = 0;
+    int end = i - 1;
+    while (start < end) {
+        char temp = str[start];
+        str[start] = str[end];
+        str[end] = temp;
+        start++;
+        end--;
+    }
+}
+
 struct Atributo {
     string nombre;
     int cantidad;
@@ -582,7 +621,7 @@ class Funciones {
         void Imprimir(Aventurero *av, int &cantAventureros) {
             contImprimir++;
             char buffer[10]; 
-            itoa(contImprimir, buffer, 10);
+            cus_itoa(contImprimir, buffer, 10);
             string nombreArchivo = "operaciones/operacion" + string(buffer) + ".out";
 
             ofstream archivo(nombreArchivo);
