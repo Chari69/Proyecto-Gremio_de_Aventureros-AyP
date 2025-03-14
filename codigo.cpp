@@ -2,6 +2,17 @@
 #include <fstream>
 #include <cstdlib>
 
+// definir si esta en linux o windows para ejecutar los comandos del sistema
+#ifdef _WIN32
+    #define DELETE_COMMAND "del"
+    #define LIST_COMMAND "dir /b"
+#elif __linux__
+    #define DELETE_COMMAND "rm"
+    #define LIST_COMMAND "ls"
+#else
+    #error "Plataforma no soportada"
+#endif
+
 using namespace std;
 
 int global_contadorOperaciones = 0;
@@ -221,8 +232,8 @@ class Directorio {
         int cantArchivos = 0;
 
         void leerCarpeta(string directorio) {
-            directorio = "dir /b \"" + directorio + "\" > database.temp";
-            system(directorio.c_str());
+            string comando = string(LIST_COMMAND) + " \"" + directorio + "\" > database.temp";
+            system(comando.c_str());
 
             ifstream archivo("database.temp");
             string linea;
@@ -244,7 +255,8 @@ class Directorio {
             }
 
             archivo.close();
-            system("del database.temp");
+            string del_command = (string)DELETE_COMMAND + " database.temp";
+            system(del_command.c_str());
         }
 
         void modificarStringDirectorio() {
@@ -813,7 +825,8 @@ class Inicializador : Directorio, Funciones {
                 cout << endl;
             }*/
 
-            system("del archivo_manipulado.temp");
+            string del_command = (string)DELETE_COMMAND + " archivo_manipulado.temp";
+            system(del_command.c_str());
         }
     
         void asignarAventureros() {
@@ -825,7 +838,7 @@ class Inicializador : Directorio, Funciones {
         }
 
     public:
-        Aventurero *aventurero;
+        Aventurero *aventurero = nullptr;
         int cantAventureros = 0;
 
         void iniciar() {
