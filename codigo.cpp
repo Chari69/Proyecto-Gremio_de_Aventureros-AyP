@@ -145,7 +145,6 @@ class Aventurero {
         void guardarADN (int valor) {
             if(i_adn<n_adn && j_adn<n_adn){
                 adn[i_adn][j_adn] = valor;
-                //cout << adn[i_adn][j_adn] << " ";
                 j_adn++;
 
                 if(i_adn<=n_adn && j_adn==n_adn){
@@ -514,12 +513,8 @@ class Funciones {
                 op.operaciones[op.numOp-1] = arg1;
                 op.simbolo[op.numOp-1] = simbolo;
 
-                //cout << "operacion numero: " << op.numOp << endl;;
-
                 op.numOp++; // Sumar 1 al numero de operaciones
             }
-            
-            //cout << "===========" << endl;
 
             bool activacionAnterior = false;
 
@@ -562,17 +557,12 @@ class Funciones {
                 op.operaciones[op.numOp-1] = arg1;
                 op.simbolo[op.numOp-1] = simbolo;
 
-                //cout << "operacion numero: " << op.numOp << endl;;
-
                 op.numOp++; // Sumar 1 al numero de operaciones
             }
-            
-            //cout << "===========" << endl;
 
             // Ordenar los aventureros segun las operaciones
             // Se usa un bubble sort
             for (int i = 0; i < op.numOp-1; i++) {
-                //cout << op.operaciones[i] << " " << op.simbolo[i] << endl;
                 bubbleSort(aventureros, cantAventureros, op.operaciones[i], simbolo, contador);
             }
 
@@ -612,13 +602,9 @@ class Funciones {
                 op.simbolo[op.numOp-1] = simbolo;
                 op.atrVal[op.numOp-1] = valor;
 
-                //cout << "operacion numero: " << op.numOp << endl;;
-
                 simbolo = "EXISTE"; // Para evitar problemas. Volver al valor default.
                 op.numOp++;         // Sumar 1 al numero de operaciones                
             }
-
-            //cout << "===========" << endl;
 
             bool activacionAnterior = false;
 
@@ -808,23 +794,6 @@ class Inicializador : Directorio, Funciones {
             // Calcular Puntaje
             aventurero[iterador].calcularPuntajeADN();
 
-            /*
-            cout << "Clase: " << aventurero[iterador].clase << endl;
-            for(int i = 0; i < aventurero[iterador].cantFacciones; i++) {
-                cout << "Faccion: " << aventurero[iterador].faccion[i] << " ";
-            }
-            cout << "Nombre: " << aventurero[iterador].nombre << endl;
-            cout << "Atributos: " << endl;
-            for (int i = 0; i < cantAtributos; i++) 
-                cout << aventurero[iterador].atributos[i].nombre << ": " << aventurero[iterador].atributos[i].cantidad << endl;
-        
-            for (int i = 0; i < ordenMatriz; i++) {
-                for (int j = 0; j < ordenMatriz; j++) {
-                    cout << aventurero[iterador].adn[i][j] << " ";
-                }
-                cout << endl;
-            }*/
-
             string del_command = (string)DELETE_COMMAND + " archivo_manipulado.temp";
             system(del_command.c_str());
         }
@@ -856,27 +825,18 @@ class Inicializador : Directorio, Funciones {
                     asignarAventureros();
                     global_contadorOperaciones++;           // no se si se debe sumar en cargar, lol
                 } else if (dato == "BUSCAR") {
-                    //cout << "estoy en la funcion BUSCAR" << endl;
                     Buscar(aventurero, cantAventureros);
                     crearArrayAventureros(0);
                     global_contadorOperaciones++;
                 } else if (dato == "ORDENAR") {
-                    //cout << "estoy en la funcion ORDENAR" << endl;
                     Ordenar(aventurero, cantAventureros);
                     crearArrayAventureros(0);
                     global_contadorOperaciones++;
                 } else if (dato == "SELECCIONAR") {
-                    //cout << "estoy en la funcion SELECCIONAR" << endl;
                     Seleccionar(aventurero, cantAventureros);
                     crearArrayAventureros(0);
                     global_contadorOperaciones++;
                 } else if (dato == "IMPRIMIR") {
-                    //cout << "estoy en la funcion IMPRIMIR" << endl;
-                    /*
-                    for (int i = 0; i < cantAventureros; i++) {
-                        cout << "Aventurero "<< i+1 << ":" << aventurero[i].nombre << endl;
-                    }
-                    */
                     Imprimir(aventurero, cantAventureros);
                 }
             }
